@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Add missing Keycloak baseline configurations for versions 21.1.2, 22.0.5, 26.1.0, 26.4.0, 26.5.5, and 26.5.7 [#1568](https://github.com/adorsys/keycloak-config-cli/issues/1568)
 
 ### Fixed
+- Fix regression under Keycloak FGAP V2 where authorization resource placeholders were eagerly stripped to bare UUIDs for custom clients (stripping is now safely scoped to internal admin clients only) [#1526](https://github.com/adorsys/keycloak-config-cli/issues/1526)
 - Fix `NullPointerException` during normalization when optional fields like `keycloakVersion` or client `protocol` are missing from the exported JSON [#1536](https://github.com/adorsys/keycloak-config-cli/issues/1536)
 - Fix Helm chart not being published to GitHub Pages on releases by publishing from tag pushes instead of main branch [#1356](https://github.com/adorsys/keycloak-config-cli/issues/1356)
 - Fix organization pagination conflict when importing realms with more than 10 organizations [#1493](https://github.com/adorsys/keycloak-config-cli/issues/1493)
