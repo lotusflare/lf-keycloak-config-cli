@@ -22,7 +22,7 @@ on:
 
 jobs:
   build-image:
-    runs-on: general-large-x86-v2
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
