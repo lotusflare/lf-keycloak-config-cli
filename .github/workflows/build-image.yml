@@ -1,0 +1,65 @@
+name: Build Keycloak Config CLI Image
+run-name: "Build lf-keycloak-config-cli - KC: ${{ inputs.keycloak_version }} | Tag: ${{ inputs.tag || 'auto' }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      keycloak_version:
+        description: '1. Keycloak version to build against (e.g., 26.5.5)'
+        required: true
+        default: '26.5.5'
+        type: string
+      keycloak_client_version:
+        description: '2. Keycloak client version (e.g., 26.0.8)'
+        required: true
+        default: '26.0.8'
+        type: string
+      tag:
+        description: '3. Custom image tag (leave empty to auto-generate: {keycloak_version}-{timestamp})'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  build-image:
+    runs-on: general-large-x86-v2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate image tag
+        id: generate-tag
+        run: |
+          if [ -n "${{ inputs.tag }}" ]; then
+            FINAL_TAG="${{ inputs.tag }}"
+            echo "Using custom tag: $FINAL_TAG"
+          else
+            TIMESTAMP=$(date +%Y-%m-%d-%H%M)
+            FINAL_TAG="${{ inputs.keycloak_version }}-${TIMESTAMP}"
+            echo "Auto-generated tag: $FINAL_TAG"
+          fi
+          echo "FINAL_TAG=$FINAL_TAG" >> $GITHUB_OUTPUT
+
+      - name: Docker build and push
+        uses: lotusflare/actions/docker-build-bake@docker-build-bake-v1.3
+        env:
+          KEYCLOAK_VERSION: ${{ inputs.keycloak_version }}
+          KEYCLOAK_CLIENT_VERSION: ${{ inputs.keycloak_client_version }}
+        with:
+          tag_from_hcl: true
+          docker-path: .
+          file: docker-bake.hcl
+          build-group: "prod"
+          image-name: "lf-keycloak-config-cli"
+          tag: ${{ steps.generate-tag.outputs.FINAL_TAG }}
+          scan_trivy: 0
+          enable_trivy: false
+          publish: true
+
+      - name: Summary
+        run: |
+          echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image**: \`111087410577.dkr.ecr.us-east-1.amazonaws.com/lf-keycloak-config-cli:${{ steps.generate-tag.outputs.FINAL_TAG }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Keycloak Version**: \`${{ inputs.keycloak_version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Keycloak Client Version**: \`${{ inputs.keycloak_client_version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: \`${{ github.actor }}\`" >> $GITHUB_STEP_SUMMARY
