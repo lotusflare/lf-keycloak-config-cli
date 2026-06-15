@@ -22,6 +22,7 @@ package de.adorsys.keycloak.config.util;
 
 import de.adorsys.keycloak.config.properties.KeycloakConfigProperties;
 import de.adorsys.keycloak.config.util.resteasy.CookieClientFilter;
+import de.adorsys.keycloak.config.util.resteasy.KeycloakApiLoggingFilter;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
@@ -74,6 +75,7 @@ public class ResteasyUtil {
         }
 
         clientBuilder.register(CookieClientFilter.class);
+        clientBuilder.register(KeycloakApiLoggingFilter.class);
 
         return clientBuilder.build();
     }

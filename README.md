@@ -136,12 +136,13 @@ keycloak-config-cli supports logging in JSON format. To enable, set `SPRING_PROF
 
 ## Log level
 
-| CLI Option                          | ENV Variable                    | Description                                                                          | Default                       |
-|-------------------------------------|---------------------------------|--------------------------------------------------------------------------------------|-------------------------------|
-| --logging.level.root                | LOGGING_LEVEL_ROOT              | define the root log level                                                            | `info`                        |
-| --logging.level.keycloak-config-cli | LOGGING_LEVEL_KEYCLOAKCONFIGCLI | log level of keycloak-config-cli components                                          | value of `logging.level.root` |
-| --logging.level.http                | LOGGING_LEVEL_HTTP              | log level http requests between keycloak-config-cli and Keycloak                     | value of `logging.level.root` |
-| --logging.level.realm-config        | LOGGING_LEVEL_REALMCONFIG       | if set to trace, the realm config including **sensitive information** will be logged | value of `logging.level.root` |
+| CLI Option                          | ENV Variable                    | Description                                                                                                                                          | Default                       |
+|-------------------------------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|
+| --logging.level.root                | LOGGING_LEVEL_ROOT              | define the root log level                                                                                                                            | `info`                        |
+| --logging.level.keycloak-config-cli | LOGGING_LEVEL_KEYCLOAKCONFIGCLI | log level of keycloak-config-cli components                                                                                                          | value of `logging.level.root` |
+| --logging.level.http                | LOGGING_LEVEL_HTTP              | log level http requests between keycloak-config-cli and Keycloak                                                                                     | value of `logging.level.root` |
+| --logging.level.realm-config        | LOGGING_LEVEL_REALMCONFIG       | if set to trace, the realm config including **sensitive information** will be logged                                                                  | value of `logging.level.root` |
+| --logging.level.keycloakApi         | LOGGING_LEVEL_KEYCLOAKAPI       | log every Keycloak Admin API request/response. Set to `info` for URL+status only; set to `debug` to also include request/response bodies (redacted) | value of `logging.level.root` |
 
 # Supported features
 
