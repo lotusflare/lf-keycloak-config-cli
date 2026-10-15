@@ -93,6 +93,17 @@ class KeycloakImportProviderIT extends AbstractImportTest {
     }
 
     @Test
+    void shouldImportMasterRealmAfterOtherRealms() {
+        String location = "classpath:import-files/import/master-last/*";
+        KeycloakImport keycloakImport = keycloakImportProvider.readFromLocations(location);
+        assertThat(keycloakImport.getRealmImports().get(location).keySet(), contains(
+                matchesPattern(".+/a_realm\\.json"),
+                matchesPattern(".+/z_realm\\.json"),
+                matchesPattern(".+/m_master\\.json")
+        ));
+    }
+
+    @Test
     void shouldReadLocalFilesFromDirectorySortedWithoutHiddenFilesWithRegex() {
         String location = "classpath:import-files/import/sorted/{filename:[^7]+}";
         KeycloakImport keycloakImport = keycloakImportProvider.readFromLocations(location);

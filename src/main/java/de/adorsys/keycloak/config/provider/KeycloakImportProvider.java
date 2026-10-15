@@ -132,13 +132,14 @@ public class KeycloakImportProvider {
                 throw new InvalidImportException("No files matching '" + location + "'!");
             }
 
-            // Import Pipe
+            // Import Pipe. Master grants roles on other realms, so a file that
+            // contains the master realm is imported after every other file here.
             Map<String, List<RealmImport>> realmImport = Arrays.stream(resources)
                     .map(this::readResource)
                     .filter(this::filterEmptyResources)
-                    .sorted(Map.Entry.comparingByKey())
                     .map(this::substituteImportResource)
                     .map(this::readRealmImportFromImportResource)
+                    .sorted(this::masterRealmLast)
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                             (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
@@ -250,6 +251,17 @@ public class KeycloakImportProvider {
         }
         matcher.appendTail(sb);
         return sb.toString();
+    }
+
+    private int masterRealmLast(Pair<String, List<RealmImport>> left, Pair<String, List<RealmImport>> right) {
+        return Comparator
+                .comparing((Pair<String, List<RealmImport>> pair) -> containsMasterRealm(pair.getValue()))
+                .thenComparing(Pair::getKey)
+                .compare(left, right);
+    }
+
+    private static boolean containsMasterRealm(List<RealmImport> realms) {
+        return realms.stream().anyMatch(realm -> "master".equals(realm.getRealm()));
     }
 
     private Pair<String, List<RealmImport>> readRealmImportFromImportResource(ImportResource resource) {
