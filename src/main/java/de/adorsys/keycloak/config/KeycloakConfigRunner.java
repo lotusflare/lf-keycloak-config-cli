@@ -74,6 +74,8 @@ public class KeycloakConfigRunner implements CommandLineRunner, ExitCodeGenerato
         return exitCode;
     }
 
+    
+
     @Override
     public void run(String... args) {
         try {
